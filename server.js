@@ -128,6 +128,7 @@ async function handlePlaylists(res) {
 async function handleTracks(url, res) {
   const playlistId = url.searchParams.get("playlistId") || "";
   const limit = clampNumber(url.searchParams.get("limit"), 1, trackResponseLimit, 150);
+  const shuffleTracks = url.searchParams.get("shuffle") === "1";
   if (!playlistId) return sendJson(res, 400, { error: "playlistId is required." });
 
   const output = await runMusicScript(`
@@ -147,9 +148,20 @@ async function handleTracks(url, res) {
       set totalTracks to count of tracks of targetPlaylist
       set maxCount to limitValue
       if totalTracks < maxCount then set maxCount to totalTracks
-      repeat with i from 1 to maxCount
+      if maxCount is 0 then return output
+
+      if ${shuffleTracks ? "true" : "false"} then
+        set pickedIndexes to my randomTrackIndexes(totalTracks, maxCount)
+      else
+        set pickedIndexes to {}
+        repeat with i from 1 to maxCount
+          set end of pickedIndexes to i
+        end repeat
+      end if
+
+      repeat with trackIndex in pickedIndexes
         try
-          set t to track i of targetPlaylist
+          set t to track (trackIndex as integer) of targetPlaylist
           set output to output & my trackRow(t, playlistId) & linefeed
         end try
       end repeat
@@ -195,6 +207,7 @@ async function handleSearch(url, res) {
 
 async function handleLibrary(url, res) {
   const limit = clampNumber(url.searchParams.get("limit"), 1, trackResponseLimit, 200);
+  const shuffleTracks = url.searchParams.get("shuffle") === "1";
   const output = await runMusicScript(`
     set limitValue to ${limit}
     tell application "Music"
@@ -202,9 +215,20 @@ async function handleLibrary(url, res) {
       set totalTracks to count of tracks of library playlist 1
       set maxCount to limitValue
       if totalTracks < maxCount then set maxCount to totalTracks
-      repeat with i from 1 to maxCount
+      if maxCount is 0 then return output
+
+      if ${shuffleTracks ? "true" : "false"} then
+        set pickedIndexes to my randomTrackIndexes(totalTracks, maxCount)
+      else
+        set pickedIndexes to {}
+        repeat with i from 1 to maxCount
+          set end of pickedIndexes to i
+        end repeat
+      end if
+
+      repeat with trackIndex in pickedIndexes
         try
-          set t to track i of library playlist 1
+          set t to track (trackIndex as integer) of library playlist 1
           set output to output & my trackRow(t, "__library__") & linefeed
         end try
       end repeat
@@ -460,6 +484,33 @@ function appleScriptHelpers() {
     on playlistRow(pid, pname, pcount)
       return my clean(pid) & tab & my clean(pname) & tab & my clean(pcount)
     end playlistRow
+
+    on randomTrackIndexes(totalTracks, maxCount)
+      set pickedIndexes to {}
+      if maxCount <= 0 then return pickedIndexes
+
+      if totalTracks <= maxCount then
+        repeat with trackIndex from 1 to totalTracks
+          set end of pickedIndexes to trackIndex
+        end repeat
+        repeat with cursorIndex from totalTracks to 2 by -1
+          set targetIndex to random number from 1 to (cursorIndex as integer)
+          set savedIndex to item cursorIndex of pickedIndexes
+          set item cursorIndex of pickedIndexes to item targetIndex of pickedIndexes
+          set item targetIndex of pickedIndexes to savedIndex
+        end repeat
+        return pickedIndexes
+      end if
+
+      repeat while (count of pickedIndexes) < maxCount
+        set randomIndex to random number from 1 to totalTracks
+        if pickedIndexes does not contain randomIndex then
+          set end of pickedIndexes to randomIndex
+        end if
+      end repeat
+
+      return pickedIndexes
+    end randomTrackIndexes
 
     on emit(a, b, c, d, e, f, g)
       return my clean(a) & tab & my clean(b) & tab & my clean(c) & tab & my clean(d) & tab & my clean(e) & tab & my clean(f) & tab & my clean(g)

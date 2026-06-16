@@ -196,11 +196,11 @@ async function loadLibraryTracks() {
     const playlistCount = Number(selectedOption?.dataset.count || 0);
     const limit = Math.min(playlistCount || TRACK_LOAD_LIMIT, TRACK_LOAD_LIMIT);
 
-    log("プレイリストの曲を読み込み中");
-    const body = await apiJson(`/api/music/tracks?playlistId=${encodeURIComponent(playlistId)}&limit=${limit}`);
+    log("プレイリストからランダムに曲を読み込み中");
+    const body = await apiJson(`/api/music/tracks?playlistId=${encodeURIComponent(playlistId)}&limit=${limit}&shuffle=1`);
     setCandidates(body.tracks || []);
     if (playlistCount > TRACK_LOAD_LIMIT) {
-      log(`プレイリストが大きいため、先頭${TRACK_LOAD_LIMIT}曲まで読み込みました。`);
+      log(`プレイリストが大きいため、ランダムに${TRACK_LOAD_LIMIT}曲まで読み込みました。`);
     }
   } catch (error) {
     logError(error);
@@ -213,8 +213,8 @@ async function loadLibrary() {
   const done = setBusy(el.loadLibraryButton, "読込中");
   try {
     await ensureConnected();
-    log("ライブラリから曲を読み込み中");
-    const body = await apiJson(`/api/music/library?limit=${TRACK_LOAD_LIMIT}`);
+    log("ライブラリからランダムに曲を読み込み中");
+    const body = await apiJson(`/api/music/library?limit=${TRACK_LOAD_LIMIT}&shuffle=1`);
     setCandidates(body.tracks || []);
   } catch (error) {
     logError(error);
