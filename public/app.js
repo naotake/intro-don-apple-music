@@ -317,8 +317,8 @@ function showQuestionAt(index) {
 async function playIntro(seconds = Number(el.introSeconds.value), triggerButton = null) {
   const done = triggerButton ? setBusy(triggerButton, "...") : () => {};
   try {
-    requireConnected();
     if (!state.current) throw new Error("問題を開始してください。");
+    await ensureConnected();
 
     await apiJson("/api/music/play", {
       method: "POST",
@@ -342,7 +342,6 @@ async function playIntro(seconds = Number(el.introSeconds.value), triggerButton 
 
 async function pausePlayback(options = {}) {
   try {
-    if (!state.connected) return;
     await apiJson("/api/music/pause", { method: "POST" });
     if (!options.quiet) log("Music.appを停止しました。");
   } catch (error) {
@@ -527,6 +526,7 @@ function syncCorrectMode() {
 
 async function playHighlight(song) {
   if (!song) return;
+  await ensureConnected();
   const position = calculateHighlightPosition(song.duration);
   await apiJson("/api/music/play-highlight", {
     method: "POST",
@@ -761,12 +761,12 @@ function setSourceButtonsEnabled(enabled) {
 function syncQuestionNavigation() {
   const canGoBack = state.currentIndex > 0;
   const canGoForward = state.deck.length > 0 || state.currentIndex < state.history.length - 1;
-  el.previousButton.disabled = !state.connected || !canGoBack;
-  el.nextButton.disabled = !state.connected || !canGoForward;
+  el.previousButton.disabled = !canGoBack;
+  el.nextButton.disabled = !canGoForward;
 }
 
 function syncQuestionControls() {
-  const hasCurrent = state.connected && Boolean(state.current);
+  const hasCurrent = Boolean(state.current);
   el.durationPresetButtons.forEach((button) => {
     button.disabled = !hasCurrent;
   });
@@ -786,12 +786,6 @@ function setBusy(button, label) {
     button.textContent = previousText;
     button.disabled = wasDisabled;
   };
-}
-
-function requireConnected() {
-  if (!state.connected) {
-    throw new Error("先にMusic.appに接続してください。");
-  }
 }
 
 async function ensureConnected() {
