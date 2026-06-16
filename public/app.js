@@ -1,3 +1,6 @@
+const TRACK_LOAD_LIMIT = 2000;
+const CANDIDATE_PREVIEW_LIMIT = 80;
+
 const state = {
   connected: false,
   sourceMode: "search",
@@ -168,7 +171,9 @@ async function loadLibraryPlaylists() {
 
     for (const playlist of playlists) {
       const label = `${playlist.name} (${playlist.count})`;
-      el.libraryPlaylistSelect.append(new Option(label, playlist.id));
+      const option = new Option(label, playlist.id);
+      option.dataset.count = String(playlist.count || 0);
+      el.libraryPlaylistSelect.append(option);
     }
     selectPreferredPlaylist(playlists);
     el.libraryPlaylistSelect.disabled = false;
@@ -187,10 +192,16 @@ async function loadLibraryTracks() {
     await ensureConnected();
     const playlistId = el.libraryPlaylistSelect.value;
     if (!playlistId) throw new Error("プレイリストを選択してください。");
+    const selectedOption = el.libraryPlaylistSelect.selectedOptions[0];
+    const playlistCount = Number(selectedOption?.dataset.count || 0);
+    const limit = Math.min(playlistCount || TRACK_LOAD_LIMIT, TRACK_LOAD_LIMIT);
 
     log("プレイリストの曲を読み込み中");
-    const body = await apiJson(`/api/music/tracks?playlistId=${encodeURIComponent(playlistId)}&limit=60`);
+    const body = await apiJson(`/api/music/tracks?playlistId=${encodeURIComponent(playlistId)}&limit=${limit}`);
     setCandidates(body.tracks || []);
+    if (playlistCount > TRACK_LOAD_LIMIT) {
+      log(`プレイリストが大きいため、先頭${TRACK_LOAD_LIMIT}曲まで読み込みました。`);
+    }
   } catch (error) {
     logError(error);
   } finally {
@@ -203,7 +214,7 @@ async function loadLibrary() {
   try {
     await ensureConnected();
     log("ライブラリから曲を読み込み中");
-    const body = await apiJson("/api/music/library?limit=60");
+    const body = await apiJson(`/api/music/library?limit=${TRACK_LOAD_LIMIT}`);
     setCandidates(body.tracks || []);
   } catch (error) {
     logError(error);
@@ -649,7 +660,8 @@ function renderCounts() {
 
 function renderCandidates() {
   el.candidateList.innerHTML = "";
-  for (const song of state.candidates.slice(0, 60)) {
+  const previewSongs = state.candidates.slice(0, CANDIDATE_PREVIEW_LIMIT);
+  for (const song of previewSongs) {
     const item = document.createElement("div");
     item.className = "candidate-item";
 
@@ -663,6 +675,23 @@ function renderCandidates() {
     title.textContent = song.name;
     artist.textContent = [song.artistName, song.albumName].filter(Boolean).join(" / ");
     text.append(title, artist);
+
+    item.append(icon, text);
+    el.candidateList.append(item);
+  }
+  if (state.candidates.length > CANDIDATE_PREVIEW_LIMIT) {
+    const item = document.createElement("div");
+    item.className = "candidate-item candidate-more";
+
+    const icon = document.createElement("div");
+    icon.className = "candidate-icon";
+    icon.textContent = "+";
+
+    const text = document.createElement("div");
+    const title = document.createElement("strong");
+    const count = state.candidates.length - CANDIDATE_PREVIEW_LIMIT;
+    title.textContent = `ほか${count}曲`;
+    text.append(title);
 
     item.append(icon, text);
     el.candidateList.append(item);

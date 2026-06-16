@@ -564,6 +564,15 @@ h2 {
   font-size: var(--font-small);
 }
 
+.candidate-more {
+  color: var(--muted);
+}
+
+.candidate-more .candidate-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .source-box.is-hidden,
 .is-hidden {
   display: none;

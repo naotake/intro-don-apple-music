@@ -9,6 +9,7 @@ const publicDir = join(rootDir, "public");
 const artworkCacheDir = join(rootDir, ".artwork-cache");
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 4173);
+const trackResponseLimit = 2000;
 
 let introStopTimer = null;
 
@@ -126,7 +127,7 @@ async function handlePlaylists(res) {
 
 async function handleTracks(url, res) {
   const playlistId = url.searchParams.get("playlistId") || "";
-  const limit = clampNumber(url.searchParams.get("limit"), 1, 500, 150);
+  const limit = clampNumber(url.searchParams.get("limit"), 1, trackResponseLimit, 150);
   if (!playlistId) return sendJson(res, 400, { error: "playlistId is required." });
 
   const output = await runMusicScript(`
@@ -193,7 +194,7 @@ async function handleSearch(url, res) {
 }
 
 async function handleLibrary(url, res) {
-  const limit = clampNumber(url.searchParams.get("limit"), 1, 500, 200);
+  const limit = clampNumber(url.searchParams.get("limit"), 1, trackResponseLimit, 200);
   const output = await runMusicScript(`
     set limitValue to ${limit}
     tell application "Music"
