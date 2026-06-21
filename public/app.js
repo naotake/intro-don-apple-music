@@ -3,7 +3,7 @@ const CANDIDATE_PREVIEW_LIMIT = 80;
 
 const state = {
   connected: false,
-  sourceMode: "search",
+  sourceMode: "playlist",
   candidates: [],
   deck: [],
   deckCursor: 0,
@@ -163,11 +163,19 @@ async function loadLibraryPlaylists() {
     el.libraryPlaylistSelect.innerHTML = "";
 
     if (!playlists.length) {
-      el.libraryPlaylistSelect.append(new Option("プレイリストが見つかりません", ""));
+      const emptyOption = new Option("プレイリストが見つかりません", "");
+      emptyOption.disabled = true;
+      emptyOption.selected = true;
+      el.libraryPlaylistSelect.append(emptyOption);
       el.libraryPlaylistSelect.disabled = true;
       el.loadLibraryTracksButton.disabled = true;
       return;
     }
+
+    const placeholderOption = new Option("プレイリストを選択", "");
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    el.libraryPlaylistSelect.append(placeholderOption);
 
     for (const playlist of playlists) {
       const label = `${playlist.name} (${playlist.count})`;
@@ -711,11 +719,12 @@ function setSourceMode(mode) {
 function selectPreferredPlaylist(playlists) {
   const preferred =
     playlists.find((playlist) => playlist.name === "イントロドン") ||
-    playlists.find((playlist) => /イントロ|intro/i.test(playlist.name)) ||
-    playlists.find((playlist) => playlist.count > 0 && playlist.count <= 200) ||
-    playlists.find((playlist) => playlist.count > 0);
+    playlists.find((playlist) => /イントロ|intro/i.test(playlist.name));
 
-  if (!preferred) return;
+  if (!preferred) {
+    el.libraryPlaylistSelect.value = "";
+    return;
+  }
   el.libraryPlaylistSelect.value = preferred.id;
   log(`おすすめとして「${preferred.name}」を選択しました。`);
 }

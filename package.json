@@ -1,7 +1,13 @@
 {
   "name": "intro-don-apple-music",
   "version": "0.1.0",
+  "description": "A local intro quiz app powered by Music.app on macOS",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naotake/intro-don-apple-music.git"
+  },
   "type": "module",
   "scripts": {
     "start": "node server.js",

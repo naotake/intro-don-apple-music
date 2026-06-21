@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>イントロドン Music.app MVP</title>
+    <title>イントロドン for Music.app</title>
     <link rel="stylesheet" href="/styles.css" />
     <script type="module" src="/app.js"></script>
   </head>
@@ -91,12 +91,12 @@
               <div class="panel-section">
                 <h2>出題ソース</h2>
                 <div class="segmented" role="tablist" aria-label="出題ソース">
-                  <button class="segment is-active" data-source-mode="search" type="button">検索</button>
-                  <button class="segment" data-source-mode="playlist" type="button">プレイリスト</button>
+                  <button class="segment" data-source-mode="search" type="button">検索</button>
+                  <button class="segment is-active" data-source-mode="playlist" type="button">プレイリスト</button>
                   <button class="segment" data-source-mode="library" type="button">ライブラリ</button>
                 </div>
 
-                <div id="searchSource" class="source-box">
+                <div id="searchSource" class="source-box is-hidden">
                   <label for="searchTerm">Music.app内検索</label>
                   <div class="inline-form">
                     <input id="searchTerm" type="search" placeholder="曲名・アーティスト名" autocomplete="off" />
@@ -104,7 +104,7 @@
                   </div>
                 </div>
 
-                <div id="playlistSource" class="source-box is-hidden">
+                <div id="playlistSource" class="source-box">
                   <button id="loadLibraryPlaylistsButton" type="button">プレイリスト読込</button>
                   <select id="libraryPlaylistSelect" disabled>
                     <option value="">未読込</option>
