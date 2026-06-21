@@ -1,19 +1,20 @@
-# イントロドン for Music.app
+# Intro Don for Music.app
 
-macOSの「ミュージック」アプリをプレイヤーとして使う、ローカル動作のイントロクイズです。
-宴会や友人同士の集まりで、曲のイントロを聴いてタイトルを当てて遊べます。
+[日本語](README.ja.md)
 
-Apple Developerアカウント、MusicKitキー、`.env` は不要です。音源は抽出・保存・配信せず、Music.appへ再生を依頼します。
+A local intro quiz game that uses the macOS Music app as its player. Play a few seconds from the beginning of a song and have your friends guess the title.
 
-## 動作環境
+No Apple Developer account, MusicKit key, or `.env` file is required. The app asks Music.app to play tracks; it does not extract, store, or stream audio files.
+
+## Requirements
 
 - macOS
-- Music.appで再生できる曲、またはApple Musicライブラリ
-- Node.js 18以上
+- Tracks that can be played in Music.app, including an Apple Music library
+- Node.js 18 or later
 
-Windows、Linux、iPhone、iPadでは動作しません。Apple Musicカタログ全体ではなく、Music.appに登録されているライブラリとプレイリストが対象です。
+Windows, Linux, iPhone, and iPad are not supported. The app searches your Music.app library and playlists, not the entire Apple Music catalog.
 
-## セットアップ
+## Setup
 
 ```bash
 git clone https://github.com/naotake/intro-don-apple-music.git
@@ -21,73 +22,75 @@ cd intro-don-apple-music
 npm start
 ```
 
-ブラウザで次を開きます。
+Open the following URL in your browser:
 
 ```text
 http://127.0.0.1:4173
 ```
 
-依存パッケージはないため、通常は `npm install` 不要です。
+The project has no external package dependencies, so you normally do not need to run `npm install`.
 
-## 初回の接続
+## First connection
 
-1. Music.appを起動します。
-2. 画面右下の歯車を開きます。
-3. `Music.appに接続` を押します。
-4. macOSからAutomationの確認が表示されたら、Music.appの操作を許可します。
+1. Open Music.app.
+2. Open the setup panel using the gear button in the bottom-right corner.
+3. Select `Connect to Music.app`.
+4. If macOS asks for Automation permission, allow the terminal process to control Music.app.
 
-この権限は、ローカルサーバーからMusic.appへプレイリスト取得、再生、停止を依頼するために使います。
+This permission lets the local server read playlists and ask Music.app to play or pause tracks.
 
-## おすすめの準備
+## Recommended playlist
 
-Music.appに `イントロドン` という名前のプレイリストを作り、出題したい曲を入れておくとスムーズです。
+For the quickest setup, create a playlist in Music.app named `Intro Don` and add the tracks you want to use.
 
-- `イントロドン` というプレイリストがあれば自動選択します。
-- `イントロ` または `intro` を含む名前も自動選択候補です。
-- この名前は必須ではありません。任意のプレイリストを画面から選択できます。
-- プレイリストを用意せず、検索結果やライブラリ全体から出題することもできます。
+- A playlist named `Intro Don` or `イントロドン` is selected automatically.
+- Names containing `intro` or `イントロ` are also treated as suggested playlists.
+- The name is optional; you can select any playlist in the setup panel.
+- You can also build a quiz from search results or your entire library.
 
-## 遊び方
+## How to play
 
-1. 右下の歯車から準備パネルを開きます。
-2. プレイリスト、検索、ライブラリのいずれかから候補曲を読み込みます。
-3. 同一アーティストの出題上限を選び、`候補からデッキ作成` を押します。
-4. `1`、`3`、`5`、`10`、`15`、`30` のボタンで、その秒数だけイントロを再生します。
-5. 曲名を入力して `判定`、または `○` / `×` で手動判定します。
-6. 答えを表示すると、曲名、アーティスト、アルバムアートが表示されます。
+1. Open the setup panel from the gear button in the bottom-right corner.
+2. Load candidate tracks from a playlist, search, or the full library.
+3. Choose the per-artist track limit and select `Build quiz deck`.
+4. Select `1`, `3`, `5`, `10`, `15`, or `30` to play that many seconds from the start of the track.
+5. Enter a title and select `Check`, or use `○` / `×` to score manually.
+6. Reveal the answer to show the title, artist, and album artwork.
 
-候補曲は読み込み時にランダム抽出され、出題デッキ作成時にもシャッフルされます。大きなプレイリストやライブラリは最大2,000曲まで読み込みます。
+Tracks are selected randomly when a source is loaded and shuffled again when the quiz deck is built. Large playlists and libraries are limited to 2,000 randomly selected tracks per load.
 
-## データとプライバシー
+The interface follows your browser language on first launch and can be switched between English and Japanese from the language menu.
 
-- サーバーは初期状態で `127.0.0.1` のみに接続します。
-- 音源ファイルをブラウザへ配信したり、外部サーバーへアップロードしたりしません。
-- アルバムアートは表示のため `.artwork-cache/` に一時保存します。このディレクトリはGit管理対象外です。
-- プレイリスト名やライブラリ情報を外部へ送信しません。
+## Data and privacy
 
-## トラブルシューティング
+- The server listens on `127.0.0.1` by default.
+- Audio files are never sent to the browser or uploaded to an external server.
+- Album artwork is cached temporarily in `.artwork-cache/` for display. This directory is ignored by Git.
+- Playlist names and library metadata are not sent to external services.
 
-### Music.appに接続できない
+## Troubleshooting
 
-Music.appを起動し、macOSの「システム設定 > プライバシーとセキュリティ > オートメーション」で、ターミナルからMusic.appを操作する許可を確認してください。
+### Music.app does not connect
 
-### 曲が再生されない
+Open Music.app, then check macOS **System Settings > Privacy & Security > Automation** and confirm that your terminal is allowed to control Music.app.
 
-- Music.appで対象曲を単独再生できるか確認します。
-- Music.appの音量と出力先を確認します。
-- ブラウザを再読み込みし、再度候補曲を読み込みます。
+### A track does not play
 
-### ポート4173が使用中
+- Confirm that the track can be played directly in Music.app.
+- Check the Music.app volume and audio output device.
+- Reload the browser, then load the candidate tracks again.
 
-別のポートで起動できます。
+### Port 4173 is already in use
+
+Start the app on another port:
 
 ```bash
 PORT=4174 npm start
 ```
 
-## 注意事項
+## Disclaimer
 
-このソフトウェアはApple Inc.の公式製品ではありません。Apple、Apple Music、Music.appは各権利者の商標です。音楽の利用条件や会場での利用可否は、利用者自身で確認してください。
+This is an independent project and is not an official Apple product. Apple, Apple Music, and Music.app are trademarks of their respective owners. Users are responsible for confirming the terms that apply to their music and venue.
 
 ## License
 

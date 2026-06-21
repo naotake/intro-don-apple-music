@@ -10,15 +10,22 @@
   <body>
     <main id="appShell" class="app-shell container">
       <header class="topbar">
-        <h1>イントロドン</h1>
+        <h1 data-i18n="app.name">イントロドン</h1>
+        <label class="language-control" for="languageSelect">
+          <span class="visually-hidden" data-i18n="language.label">言語</span>
+          <select id="languageSelect" aria-label="言語">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+          </select>
+        </label>
       </header>
 
       <section class="stage-layout">
         <section class="game-stage" aria-live="polite">
           <div class="score-strip">
-            <div><strong id="roundCount">0</strong><span>問目</span></div>
-            <div><strong id="correctCount">0</strong><span>正解</span></div>
-            <div><strong id="wrongCount">0</strong><span>不正解</span></div>
+            <div><strong id="roundCount">0</strong><span data-i18n="score.round">問目</span></div>
+            <div><strong id="correctCount">0</strong><span data-i18n="score.correct">正解</span></div>
+            <div><strong id="wrongCount">0</strong><span data-i18n="score.wrong">不正解</span></div>
           </div>
 
           <div class="question-area">
@@ -38,10 +45,10 @@
             <div class="duration-control">
               <input id="introSeconds" type="hidden" value="3" />
               <div class="duration-head">
-                <span>再生</span>
-                <span>秒だけ聞く</span>
+                <span data-i18n="playback.label">再生</span>
+                <span data-i18n="playback.suffix">秒だけ聞く</span>
               </div>
-              <div class="duration-presets" aria-label="イントロ再生">
+              <div class="duration-presets" aria-label="イントロ再生" data-i18n-aria="playback.aria">
                 <button class="duration-preset" data-duration="1" type="button" aria-label="1秒再生">1</button>
                 <button class="duration-preset is-active" data-duration="3" type="button" aria-label="3秒再生">3</button>
                 <button class="duration-preset" data-duration="5" type="button" aria-label="5秒再生">5</button>
@@ -53,21 +60,21 @@
           </div>
 
           <div class="answer-box">
-            <label for="answerInput">曲名を入力</label>
+            <label for="answerInput" data-i18n="answer.label">曲名を入力</label>
             <div class="inline-form">
               <input id="answerInput" type="text" autocomplete="off" />
-              <button id="checkAnswerButton" type="button">判定</button>
+              <button id="checkAnswerButton" type="button" data-i18n="answer.check">判定</button>
             </div>
             <p id="judgeResult" class="judge-result"></p>
           </div>
 
           <div class="action-grid">
-            <button id="previousButton" class="icon-button" type="button" aria-label="前の問題" title="前の問題">←</button>
-            <button id="nextButton" class="icon-button primary-button" type="button" aria-label="次の問題" title="次の問題">→</button>
-            <button id="showHintButton" class="icon-button" type="button" aria-label="ヒント" title="ヒント">?</button>
+            <button id="previousButton" class="icon-button" type="button" aria-label="前の問題" title="前の問題" data-i18n-aria="action.previous" data-i18n-title="action.previous">←</button>
+            <button id="nextButton" class="icon-button primary-button" type="button" aria-label="次の問題" title="次の問題" data-i18n-aria="action.next" data-i18n-title="action.next">→</button>
+            <button id="showHintButton" class="icon-button" type="button" aria-label="ヒント" title="ヒント" data-i18n-aria="action.hint" data-i18n-title="action.hint">?</button>
             <button id="revealButton" type="button" aria-label="答えを表示">答え</button>
-            <button id="markCorrectButton" class="icon-button" type="button" aria-label="正解にする" title="正解にする">○</button>
-            <button id="markWrongButton" class="icon-button" type="button" aria-label="不正解にする" title="不正解にする">×</button>
+            <button id="markCorrectButton" class="icon-button" type="button" aria-label="正解にする" title="正解にする" data-i18n-aria="action.markCorrect" data-i18n-title="action.markCorrect">○</button>
+            <button id="markWrongButton" class="icon-button" type="button" aria-label="不正解にする" title="不正解にする" data-i18n-aria="action.markWrong" data-i18n-title="action.markWrong">×</button>
           </div>
 
           <div id="hintBox" class="hint-box"></div>
@@ -77,68 +84,68 @@
 
       <footer class="setup-footer">
         <details id="setupPanel" class="setup-panel">
-          <summary class="setup-summary" aria-label="準備" title="準備">
+          <summary class="setup-summary" aria-label="準備" title="準備" data-i18n-aria="setup.label" data-i18n-title="setup.label">
             <span aria-hidden="true">⚙</span>
           </summary>
 
           <div class="setup-content">
             <div class="panel-section setup-status-row">
               <span id="configStatus" class="status-pill">確認中</span>
-              <button id="authorizeButton" class="primary-button" type="button">Music.appに接続</button>
+              <button id="authorizeButton" class="primary-button" type="button" data-i18n="setup.connect">Music.appに接続</button>
             </div>
 
             <div class="setup-grid">
               <div class="panel-section">
-                <h2>出題ソース</h2>
-                <div class="segmented" role="tablist" aria-label="出題ソース">
-                  <button class="segment" data-source-mode="search" type="button">検索</button>
-                  <button class="segment is-active" data-source-mode="playlist" type="button">プレイリスト</button>
-                  <button class="segment" data-source-mode="library" type="button">ライブラリ</button>
+                <h2 data-i18n="source.title">出題ソース</h2>
+                <div class="segmented" role="tablist" aria-label="出題ソース" data-i18n-aria="source.title">
+                  <button class="segment" data-source-mode="search" type="button" data-i18n="source.search">検索</button>
+                  <button class="segment is-active" data-source-mode="playlist" type="button" data-i18n="source.playlist">プレイリスト</button>
+                  <button class="segment" data-source-mode="library" type="button" data-i18n="source.library">ライブラリ</button>
                 </div>
 
                 <div id="searchSource" class="source-box is-hidden">
-                  <label for="searchTerm">Music.app内検索</label>
+                  <label for="searchTerm" data-i18n="source.searchLabel">Music.app内検索</label>
                   <div class="inline-form">
-                    <input id="searchTerm" type="search" placeholder="曲名・アーティスト名" autocomplete="off" />
-                    <button id="searchButton" type="button">読込</button>
+                    <input id="searchTerm" type="search" placeholder="曲名・アーティスト名" data-i18n-placeholder="source.searchPlaceholder" autocomplete="off" />
+                    <button id="searchButton" type="button" data-i18n="source.load">読込</button>
                   </div>
                 </div>
 
                 <div id="playlistSource" class="source-box">
-                  <button id="loadLibraryPlaylistsButton" type="button">プレイリスト読込</button>
+                  <button id="loadLibraryPlaylistsButton" type="button" data-i18n="source.loadPlaylists">プレイリスト読込</button>
                   <select id="libraryPlaylistSelect" disabled>
-                    <option value="">未読込</option>
+                    <option value="" data-i18n="source.notLoaded">未読込</option>
                   </select>
-                  <button id="loadLibraryTracksButton" type="button" disabled>曲を読込</button>
+                  <button id="loadLibraryTracksButton" type="button" disabled data-i18n="source.loadTracks">曲を読込</button>
                 </div>
 
                 <div id="librarySource" class="source-box is-hidden">
-                  <button id="loadLibraryButton" type="button">ライブラリから読込</button>
+                  <button id="loadLibraryButton" type="button" data-i18n="source.loadLibrary">ライブラリから読込</button>
                 </div>
               </div>
 
               <div class="panel-section">
-                <h2>ゲーム設定</h2>
-                <label for="artistLimit">同一アーティスト上限</label>
+                <h2 data-i18n="settings.title">ゲーム設定</h2>
+                <label for="artistLimit" data-i18n="settings.artistLimit">同一アーティスト上限</label>
                 <select id="artistLimit">
-                  <option value="1">1曲まで</option>
-                  <option value="2" selected>2曲まで</option>
-                  <option value="0">制限なし</option>
+                  <option value="1" data-i18n="settings.oneTrack">1曲まで</option>
+                  <option value="2" selected data-i18n="settings.twoTracks">2曲まで</option>
+                  <option value="0" data-i18n="settings.noLimit">制限なし</option>
                 </select>
 
-                <button id="buildDeckButton" type="button">候補からデッキ作成</button>
+                <button id="buildDeckButton" type="button" data-i18n="settings.buildDeck">候補からデッキ作成</button>
               </div>
 
               <div class="panel-section">
-                <h2>候補</h2>
+                <h2 data-i18n="candidates.title">候補</h2>
                 <div class="metric-grid">
                   <div>
                     <span id="candidateCount">0</span>
-                    <small>候補曲</small>
+                    <small data-i18n="candidates.loaded">候補曲</small>
                   </div>
                   <div>
                     <span id="deckCount">0</span>
-                    <small>出題曲</small>
+                    <small data-i18n="candidates.deck">出題曲</small>
                   </div>
                 </div>
                 <div id="candidateList" class="candidate-list" aria-live="polite"></div>

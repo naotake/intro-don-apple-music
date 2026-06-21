@@ -163,6 +163,31 @@ h2 {
 .topbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--component-gap);
+}
+
+.language-control {
+  flex: 0 0 auto;
+}
+
+.language-control select {
+  width: auto;
+  padding: 0.55em 2.1em 0.55em 0.75em;
+  background-color: transparent;
+  color: var(--muted);
+  font-size: var(--font-small);
+  font-weight: var(--weight-bold);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .stage-layout {
